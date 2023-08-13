@@ -11,7 +11,7 @@ class Subject extends Model
 {
     use HasFactory;
 
-    protected $fillable=['subject_name','specialization_id'];
+    protected $fillable=['name','Specialization_id'];
 
     public function specialization(): BelongsTo{
 
