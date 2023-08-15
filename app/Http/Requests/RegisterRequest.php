@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name'=>'required|string|unique:users',
-            'mobile_phone'=>'required|unique:users|numeric',
+            'mobile_phone'=>'required|unique:users|numeric|regex:/(09)[0-9]{9}/',
             'specialization_id'=>'required|integer|exists:specializations,id'
         ];
     }

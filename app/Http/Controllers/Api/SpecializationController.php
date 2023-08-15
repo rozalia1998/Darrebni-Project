@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Specialization;
 use App\Models\Collage;
 use App\Http\Requests\SpecializationRequest;
+use App\Http\Resources\SearchResource;
+use App\Http\Resources\SpecilizeResource;
 use Illuminate\Http\Request;
 
 class SpecializationController extends Controller
 {
     use JsonResponse;
+    
 
     public function createSpecialize(SpecializationRequest $request){
         if($request->hasFile('image')){
@@ -56,4 +59,50 @@ class SpecializationController extends Controller
 
         return $this->successResponse('Deleted Specialization Successfully');
     }
+
+
+    public function all()
+    {
+        $all=Specialization::all();
+        $specializations =SpecilizeResource::collection($all);
+
+
+        return $this->successResponse('Success!',$specializations);
+
+    }
+
+    public function Specific($eid)
+    {
+        $college = Collage::find($eid);
+
+        if (!$college) {
+            return $this->notFoundResponse('College not found');
+        }
+    
+        $specialization = $college->specializations()->get();
+        $specialization=SpecilizeResource::collection($specialization);
+
+        return $this->successResponse('Success!',[
+            'specialization'=>$specialization,
+        ]);
+
+
+    }
+
+    public function ssearchresult(Request $request)
+{
+    $specialization = $request->input('specialization');
+
+    $specializationSearch = Specialization::where('specialization_name', 'like', $specialization . '%')->get();
+
+    if ($specializationSearch->isEmpty()) {
+        return $this->notFoundResponse('No specialization found');
+    }
+
+    $specializations = SearchResource::collection($specializationSearch);
+
+    return $this->successResponse('Success', [
+        'specializations' => $specializations,
+    ]);
+}
 }

@@ -12,7 +12,7 @@ Trait JsonResponse{
         'status' => true,
         'message' => $message,
         'data' => [
-            'token' => $data
+             $data
         ]
     ], $code);
 }

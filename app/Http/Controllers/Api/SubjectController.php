@@ -20,6 +20,7 @@ class SubjectController extends Controller
     return response()->json($subjects);
 }
 
+
     /**
      * Store a newly created resource in storage.
      *
