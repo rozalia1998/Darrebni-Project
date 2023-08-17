@@ -5,20 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubjectRequest;
 use App\Models\Subject;
-use Illuminate\Http\Request;
+use Exception;
 
 class SubjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-{
-    $subjects = Subject::all();
-    return response()->json($subjects);
-}
+    use JsonResponse;
 
     /**
      * Store a newly created resource in storage.
@@ -28,28 +19,16 @@ class SubjectController extends Controller
      */
     public function store(SubjectRequest $request)
     {
-        Subject::create([
-            'name'=>$request->name,
-            'Specialization_id'=>$request->Specialization_id,
-        ]);
-        
-    }
+        try {
+            Subject::create([
+                'name' => $request->name,
+                'Specialization_id' => $request->Specialization_id,
+            ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $subject = Subject::find($id);
-    
-        if (!$subject) {
-            return response()->json(['message' => 'Subject not found'], 404);
+            return $this->successResponse('Created Subject Successfully');
+        } catch (Exception $e) {
+            return $this->handleException($e);
         }
-        
-        return response()->json($subject);
     }
 
     /**
@@ -61,17 +40,19 @@ class SubjectController extends Controller
      */
     public function update(SubjectRequest $request, $id)
     {
-        $subject = Subject::find($id);
-    
-    if (!$subject) {
-        return response()->json(['message' => 'Subject not found'], 404);
-    }
-    
-    $subject->name = $request->name;
-    $subject->Specialization_id = $request->Specialization_id;
-    $subject->save();
-    
-    return response()->json($subject);
+        try {
+            $subject = Subject::findOrFail($id);
+            $res = $subject->update([
+                'name'=>$request->name ?? $subject->name,
+                'Specialization_id'=>$request->Specialization_id ?? $subject->Specialization_id
+            ]);
+
+            return $this->successResponse('Updated Subject Successfully');
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return $this->notFoundResponse();
+        }
     }
 
     /**
@@ -82,14 +63,15 @@ class SubjectController extends Controller
      */
     public function destroy($id)
     {
-        $subject = Subject::find($id);
-    
-    if (!$subject) {
-        return response()->json(['message' => 'Subject not found'], 404);
-    }
-    
-    $subject->delete();
-    
-    return response()->json(['message' => 'Subject deleted successfully']);
+        try {
+            $subject = Subject::findOrFail($id);
+            $subject->delete();
+
+            return $this->successResponse('Deleted Subject Successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return $this->notFoundResponse();
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
+        }
     }
 }

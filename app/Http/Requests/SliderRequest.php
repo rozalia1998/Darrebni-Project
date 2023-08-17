@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TermRequest extends FormRequest
+class SliderRequest extends FormRequest
 {
     use JsonResponseTrait;
     /**
@@ -25,8 +25,8 @@ class TermRequest extends FormRequest
     public function rules()
     {
         return [
-            'term_name'=>'required|string',
-            'subject_id'=>'required|integer|exists:subjects,id'
+            'image_url'=>'required|url',
+            'link'=>'required|url'
         ];
     }
 }

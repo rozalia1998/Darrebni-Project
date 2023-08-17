@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\TermRequest;
-use App\Models\Term;
+use App\Http\Requests\AnswerRequest;
+use App\Models\Answer;
 use Exception;
 
-class TermController extends Controller
+class AnswerController extends Controller
 {
     use JsonResponse;
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
 
     /**
      * Store a newly created resource in storage.
@@ -17,20 +22,26 @@ class TermController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TermRequest $request)
+    public function store(AnswerRequest $request)
     {
         try {
-            $term=Term::create([
-                'term_name'=>$request->term_name,
-                'subject_id'=>$request->subject_id,
+            $answer=Answer::create([
+                'answer_content'=>$request->answer_content,
+                'question_id'=>$request->question_id,
+                'is_correct'=>$request->is_correct,
             ]);
-            return $this->successResponse('Term Added Successfully');
-
+            return $this->successResponse('Answer added Successfully');
         } catch (Exception $e) {
             return $this->handleException($e);
         }
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
 
     /**
      * Update the specified resource in storage.
@@ -39,21 +50,23 @@ class TermController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TermRequest $request, $id)
+    public function update(AnswerRequest $request, $id)
     {
         try {
-            $term = Term::findOrFail($id);
+            $answer = Answer::findOrFail($id);
 
-            $term->term_name =  $request->term_name;
-            $term->subject_id =  $request->subject_id;
-            $term->save();
+            $answer->answer_content = $request->answer_content;
+            $answer->question_id = $request->question_id;
+            $answer->is_correct = $request->is_correct;
+            $answer->save();
 
-            return $this->successResponse('Updated Term Successfully');
+            return $this->successResponse('Updated answer Successfully');
         } catch (\Exception $exception) {
             return $this->handleException($exception);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             return $this->notFoundResponse();
         }
+
     }
 
     /**
@@ -64,15 +77,16 @@ class TermController extends Controller
      */
     public function destroy($id)
     {
-        try{
-            $term = Term::findOrFail($id);
-            $term->delete();
+        try {
+            $answer = Answer::findOrFail($id);
+            $answer->delete();
 
-            return $this->successResponse('Deleted Term Successfully');
+            return $this->successResponse('Answer deleted successfully');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             return $this->notFoundResponse();
         } catch (\Exception $exception) {
             return $this->handleException($exception);
         }
+
     }
 }

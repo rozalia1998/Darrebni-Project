@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class SubjectRequest extends FormRequest
 {
+    use JsonResponseTrait;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,7 +25,8 @@ class SubjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'=>'required|string'
+            'name'=>'required|string',
+            'Specialization_id'=>'required|integer|exists:specializations,id'
         ];
     }
 }

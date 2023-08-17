@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AnswesRequest extends FormRequest
+class QuestionRequest extends FormRequest
 {
+    use JsonResponseTrait;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -13,7 +14,7 @@ class AnswesRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,12 +24,11 @@ class AnswesRequest extends FormRequest
      */
     public function rules()
     {
-        
-            return [
-                'answer_content'=>'required|string',
-                'question_id'=>'required|string',
-                'is_correct'=>'required|boolean'
-            ];
-        
+        return [
+            'question_content'=>'required|string',
+            'reference'=>'required|string',
+            'subject_id'=>'required|integer|exists:subjects,id',
+            'term_id'=>'nullable|integer|exists:terms,id'
+        ];
     }
 }

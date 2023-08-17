@@ -1,11 +1,15 @@
 <?php
 
-use App\Http\Controllers\Api\AnswersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SpecializationController;
 use App\Http\Controllers\Api\SubjectController;
+use App\Http\Controllers\Api\AnswerController;
+use App\Http\Controllers\Api\TermController;
+use App\Http\Controllers\Api\SliderController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CollageController;
 use App\Http\Middleware\AdminMiddleware;
 
 /*
@@ -20,39 +24,42 @@ use App\Http\Middleware\AdminMiddleware;
 */
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::get('/Collages/all',[CollageController::class, 'index']);
+Route::get('/Specialization/allSpecialization',[SpecializationController::class, 'index']);
+Route::get('/Collages/getSpecialization/{id}',[SpecializationController::class, 'getByCollage']);
+Route::post('/Specialization/search',[SpecializationController::class, 'searchBySpecialization']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
+
+    Route::put('/UserProfile/update',[UserController::class, 'update']);
+    Route::delete('/UserProfile/delete',[UserController::class, 'destroy']);
+    Route::post('/UserProfile/logout',[AuthController::class, 'logout']);
+    Route::get('/UserProfile/Info',[UserController::class, 'getInfo']);
+
     Route::prefix('dashboard')->middleware('admin')->group(function (){
-        Route::post('/Specialization/create',[SpecializationController::class, 'createSpecialize']);
-        Route::put('/Specialization/update/{sid}',[SpecializationController::class, 'UpdateSpecialize']);
-        Route::delete('/Specialization/delete/{sid}',[SpecializationController::class, 'deleteSpecialize']);
+
+        Route::post('/Slider/create', [SliderController::class, 'store']);
+        Route::put('/Slider/update/{id}', [SliderController::class, 'update']);
+        Route::delete('/Slider/delete/{id}', [SliderController::class, 'destroy']);
+
+        Route::post('/Specialization/create',[SpecializationController::class, 'store']);
+        Route::put('/Specialization/update/{id}',[SpecializationController::class, 'update']);
+        Route::delete('/Specialization/delete/{id}',[SpecializationController::class, 'destroy']);
 
         Route::post('/Subject/create',[SubjectController::class, 'store']);
-        Route::post('/Subject/index',[SubjectController::class, 'index']);
-        Route::post('/Subject/show/{id}',[SubjectController::class, 'show']);
         Route::put('/Subject/update/{id}',[SubjectController::class, 'update']);
         Route::delete('/Subject/delete/{id}',[SubjectController::class, 'destroy']);
 
-
-        Route::post('/Term/index', [TermController::class, 'index']);
         Route::post('/Term/store', [TermController::class, 'store']);
-        Route::post('/Term/show/{id}', [TermController::class, 'show']);
         Route::put('/Term/update/{id}', [TermController::class, 'update']);
         Route::delete('/Term/delete/{id}', [TermController::class, 'destroy']);
 
+        Route::post('/Question/create',[QuestionController::class, 'store']);
+        Route::put('/Question/update/{id}',[QuestionController::class, 'udate']);
+        Route::delete('/Question/delete/{id}',[QuestionController::class, 'destroy']);
 
-        Route::post('/Answer/index', [Answersontroller::class, 'index']);
         Route::post('/Answer/store', [AnswersController::class, 'store']);
-        Route::post('/Answer/show/{id}', [AnswersController::class, 'show']);
         Route::put('/Answer/update/{id}', [AnswersController::class, 'update']);
         Route::delete('/Answer/delete/{id}', [AnswersController::class, 'destroy']);
-
-
-
-
-
 
     });
 

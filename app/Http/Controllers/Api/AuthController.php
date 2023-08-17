@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Code;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -30,7 +31,9 @@ class AuthController extends Controller
             $token=$user->createToken('ApiToken')->plainTextToken;
             return $this->successResponse('User Registered Successfully', $token);
         }
+
     }
+
 
     public function login(LoginRequest $request){
 
@@ -44,5 +47,10 @@ class AuthController extends Controller
         } else {
             return $this->errorResponse('Invalid Information', 401);
         }
+    }
+
+    public function logout(){
+        auth()->user()->currentAccessToken()->delete();
+        return $this->successResponse('user logged out');
     }
 }
