@@ -100,6 +100,7 @@ class SpecializationController extends Controller
     }
 
     $specializations = SearchResource::collection($specializationSearch);
+    
 
     return $this->successResponse('Success', [
         'specializations' => $specializations,

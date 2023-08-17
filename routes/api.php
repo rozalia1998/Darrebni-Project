@@ -22,7 +22,7 @@ use App\Http\Middleware\AdminMiddleware;
 |
 */  
 Route::post('/Specialization/search',[SpecializationController::class, 'ssearchresult']);
-Route::post('/Specialization/all',[SpecializationController::class, 'all']);
+Route::get('/Specialization/all',[SpecializationController::class, 'all']);
 Route::get('/Specialization/{id}',[SpecializationController::class, 'Specific']);
 
 Route::get('/Colleges/all',[CollageController::class, 'AllColleges']);

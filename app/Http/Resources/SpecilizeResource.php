@@ -17,7 +17,7 @@ class SpecilizeResource extends JsonResource
         return [
             'id' => $this->id,
             'specialization_name' => $this->specialization_name,
-            'image'=>$this->image_name,
+            'image'=>$this->image,
             'collage_id'=>$this->collage_id,
         ];
     }
