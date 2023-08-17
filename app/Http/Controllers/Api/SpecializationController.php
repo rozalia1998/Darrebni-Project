@@ -65,11 +65,13 @@ class SpecializationController extends Controller
     {
         $all=Specialization::all();
         $specializations =SpecilizeResource::collection($all);
-
+        
 
         return $this->successResponse('Success!',$specializations);
 
     }
+
+
 
     public function Specific($eid)
     {

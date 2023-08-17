@@ -8,12 +8,12 @@ Trait JsonResponse{
 
     public function successResponse($message = null, $data = null, $code = 200): HttpJsonResponse
 {
-    return response()->json([[
+    return response()->json([
         'code' => $code,
         'message' => $message,
         'data' => 
              $data
-    ]]
+    ]
 , $code);
 }
 

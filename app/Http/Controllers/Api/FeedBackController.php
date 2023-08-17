@@ -3,44 +3,21 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Collage;
+use App\Models\FeedBack;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class CollageController extends Controller
+class FeedBackController extends Controller
 {
-    use JsonResponse;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function AllColleges()
+    public function index()
     {
-        $allcollege=Collage::all();
-
-        return $this->successResponse('Colleges Fetched Successfully !',$allcollege);
+        //
     }
-
-    public function FindColleges($id)
-    {
-        $FindCollege=Collage::find($id);
-
-        return $this->successResponse('Success !',$FindCollege);
-
-    }
-
-    public function specializationsCollagess()
-    {
-        $specializations = Collage::with('specializations')->get();
-    
-        
-    
-        return $this->successResponse('Success!',$specializations);
-    }
-
-
-    
-
 
     /**
      * Store a newly created resource in storage.
@@ -50,7 +27,14 @@ class CollageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+
+        FeedBack::create([
+            'Text_Field'=>$request->input('text_field'),
+            'user_id'=>Auth::id()
+        ]);
+
+        return response()->json('test');
     }
 
     /**

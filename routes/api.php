@@ -7,26 +7,25 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CollageController;
 use App\Http\Controllers\Api\SliderController;
 use App\Http\Controllers\Api\SpecializationController;
+use App\Http\Controllers\Api\FeedBackController;
+
 use App\Http\Controllers\Api\SubjectController;
 use App\Http\Controllers\Api\TermController;
 use App\Http\Middleware\AdminMiddleware;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/  
+
+
+Route::get('/Specialization/allwithcolleges',[CollageController::class, 'specializationsCollagess']);
 Route::post('/Specialization/search',[SpecializationController::class, 'ssearchresult']);
 Route::get('/Specialization/all',[SpecializationController::class, 'all']);
 Route::get('/Specialization/{id}',[SpecializationController::class, 'Specific']);
 
+
+
+
 Route::get('/Colleges/all',[CollageController::class, 'AllColleges']);
 Route::get('/Colleges/{id}',[CollageController::class, 'FindColleges']);
+
 
 
 
@@ -36,7 +35,13 @@ Route::post('/login',[AuthController::class,'login']);
 //     return $request->user();
 // });
 Route::group(['middleware' => ['auth:sanctum']], function () {
+
+    Route::post('/feedback',[FeedBackController::class, 'store']);
+
     Route::prefix('dashboard')->middleware('admin')->group(function (){
+
+
+
         Route::post('/Specialization/create',[SpecializationController::class, 'createSpecialize']);
         Route::put('/Specialization/update/{sid}',[SpecializationController::class, 'UpdateSpecialize']);
         Route::delete('/Specialization/delete/{sid}',[SpecializationController::class, 'deleteSpecialize']);
