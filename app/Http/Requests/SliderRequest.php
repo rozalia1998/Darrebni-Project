@@ -4,9 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class SliderRequest extends FormRequest
 {
-    use JsonResponseTrait;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -23,14 +22,10 @@ class RegisterRequest extends FormRequest
      * @return array<string, mixed>
      */
     public function rules()
-{
-    return [
-        'name' => 'required|string|unique:users,name',
-        'mobile_phone' => 'required|unique:users|numeric|regex:/(09)[0-9]{8}/',
-        'specialization_id' => 'required|integer|exists:specializations,id',
-    ];
-}
-
-
-    
+    {
+        return [
+            'image_url' => 'required|url',
+            'link' => 'required',
+        ];
+    }
 }

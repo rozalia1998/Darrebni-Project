@@ -28,7 +28,10 @@ class AuthController extends Controller
                 'specialization_id'=>$request->specialization_id
             ]);
             $token=$user->createToken('ApiToken')->plainTextToken;
-            return $this->successResponse('User Registered Successfully', $token);
+            return $this->successResponse('User Registered Successfully', [
+                'token'=>$token,
+            ]);
+            
         }
     }
 
@@ -40,7 +43,9 @@ class AuthController extends Controller
 
         if ($user && $user->code && $user->code->login_code === $credentials['login_code']) {
             $token = $user->createToken('ApiToken')->plainTextToken;
-            return $this->successResponse('Login Success', $token);
+            return $this->successResponse('Login Success', [
+                'token'=>$token,
+            ]);
         } else {
             return $this->errorResponse('Invalid Information', 401);
         }
