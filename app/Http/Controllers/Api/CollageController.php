@@ -16,4 +16,9 @@ class CollageController extends Controller
         return $this->successResponse('All collages',CollageResource::collection($collages));
     }
 
+    public function getCollagesWithSpecialization(){
+        $specializations=Collage::with('specializations')->get();
+        return $this->successResponse('Collages with their Specializations',$specializations);
+    }
+
 }

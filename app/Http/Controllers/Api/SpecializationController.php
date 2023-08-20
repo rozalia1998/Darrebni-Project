@@ -18,8 +18,8 @@ class SpecializationController extends Controller
         return $this->successResponse('All Specializations',SpecializationResource::collection($specializations));
     }
 
-    public function getByCollage($id){
-        $collage=Collage::findOrFail($id);
+    public function getByCollage($uuid){
+        $collage=Collage::where('uuid',$uuid)->first();
         $object=$collage->specializations()->get();
         return $this->successResponse('Get Specializations By Collage',SpecializationResource::collection($object));
     }

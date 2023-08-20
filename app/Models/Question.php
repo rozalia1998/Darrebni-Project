@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Trait\GeneratesUuid;
 
 class Question extends Model
 {
-    use HasFactory;
+    use HasFactory,GeneratesUuid;
 
-    protected $fillable=['question_content','reference','subject_id','term_id'];
+    protected $fillable=['uuid','question_content','reference','subject_id','term_id'];
 
     public function subject(): BelongsTo{
 

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('terms', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('term_name');
             $table->foreignId('subject_id')->constrained('subjects')->cascadeOnDelete();
             $table->timestamps();

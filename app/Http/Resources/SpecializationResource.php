@@ -16,6 +16,7 @@ class SpecializationResource extends JsonResource
     {
         return [
             'id'=>$this->id,
+            'uuid'=>$this->uuid,
             'specialization_name'=>$this->specialization_name,
             'image'=>$this->image,
             'collage_id'=>$this->collage_id

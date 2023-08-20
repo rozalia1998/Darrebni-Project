@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Trait\GeneratesUuid;
 
 class Term extends Model
 {
-    use HasFactory;
+    use HasFactory,GeneratesUuid;
 
-    protected $fillable=['term_name','subject_id'];
+    protected $fillable=['uuid','term_name','subject_id'];
 
     public function subject(): BelongsTo{
 

@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\Trait\GeneratesUuid;
 
-class Answer extends Model
+class Feedback extends Model
 {
     use HasFactory,GeneratesUuid;
 
-    protected $fillable=['uuid','answer_content','question_id','is_correct'];
+    protected $fillable=['uuid','user_id','feedback_content'];
 
-    public function question()
-    {
-        return $this->belongsTo(Question::class);
+    public function user():BelongsTo {
+
+        return $this->BelongsTo(User::class);
+
     }
 }

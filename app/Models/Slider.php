@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Trait\GeneratesUuid;
 
 class Slider extends Model
 {
-    use HasFactory;
+    use HasFactory,GeneratesUuid;
 
-    protected $fillable=['image_url','link'];
+    protected $fillable=['uuid','image_url','link'];
 }

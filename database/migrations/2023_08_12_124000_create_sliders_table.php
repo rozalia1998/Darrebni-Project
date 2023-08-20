@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('sliders', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('image_url');
             $table->string('link');
             $table->timestamps();

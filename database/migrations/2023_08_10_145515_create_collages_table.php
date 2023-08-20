@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('collages', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('collage_name');
             $table->timestamps();
         });

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('specializations', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('specialization_name');
             $table->string('image')->nullable();
             $table->foreignId('collage_id')->constrained('collages')->cascadeOnDelete();

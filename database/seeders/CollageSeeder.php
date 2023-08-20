@@ -15,9 +15,11 @@ class CollageSeeder extends Seeder
      */
     public function run()
     {
-        Collage::insert([
-            ['collage_name'=>'الكليات الهندسية'],
-            ['collage_name'=>'الكليات الطبية']
+        Collage::create([
+            'collage_name'=>'الكليات الهندسية'
+        ]);
+        Collage::create([
+            'collage_name'=>'الكليات الطبية'
         ]);
     }
 }
