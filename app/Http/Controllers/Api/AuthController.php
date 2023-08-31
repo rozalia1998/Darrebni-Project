@@ -21,6 +21,7 @@ class AuthController extends Controller
         $user=User::create([
             'name'=>$request->name,
             'mobile_phone'=>$request->mobile_phone,
+           
         ]);
         if($user){
             $code=Code::create([
@@ -43,6 +44,7 @@ class AuthController extends Controller
 
         if ($user && $user->code && $user->code->login_code === $credentials['login_code']) {
             $token = $user->createToken('ApiToken')->plainTextToken;
+            $user->update(['fcm_token' => $request->fcm_token]);
             return $this->successResponse('Login Success', $token);
         } else {
             return $this->errorResponse('Invalid Information', 401);
@@ -51,6 +53,7 @@ class AuthController extends Controller
 
     public function logout(){
         auth()->user()->currentAccessToken()->delete();
+        auth()->user()->update(['fcm_token' => null]);
         return $this->successResponse('user logged out');
     }
 }
