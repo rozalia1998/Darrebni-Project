@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Code;
+use App\Http\Traits\JsonResponse;
 use Exception;
 
 class AuthController extends Controller
@@ -17,24 +18,24 @@ class AuthController extends Controller
     use JsonResponse;
 
     public function register(RegisterRequest $request){
-
-        $user=User::create([
-            'name'=>$request->name,
-            'mobile_phone'=>$request->mobile_phone,
-           
-        ]);
-        if($user){
-            $code=Code::create([
-                'user_id'=>$user->id,
-                'login_code'=>  Str::random(6, '1234567890'),
-                'specialization_id'=>$request->specialization_id
+        try{
+            $user=User::create([
+                'name'=>$request->name,
+                'mobile_phone'=>$request->mobile_phone,
             ]);
-            $token=$user->createToken('ApiToken')->plainTextToken;
-            return $this->successResponse('User Registered Successfully', $token);
+            if($user){
+                $code=Code::create([
+                    'user_id'=>$user->id,
+                    'login_code'=>  Str::random(6, '1234567890'),
+                    'specialization_id'=>$request->specialization_id
+                ]);
+                $token=$user->createToken('ApiToken')->plainTextToken;
+                return $this->successResponse('User Registered Successfully', $token);
+            }
+        } catch (Exception $e) {
+            return $this->handleException($e);
         }
-
     }
-
 
     public function login(LoginRequest $request){
 
@@ -45,7 +46,11 @@ class AuthController extends Controller
         if ($user && $user->code && $user->code->login_code === $credentials['login_code']) {
             $token = $user->createToken('ApiToken')->plainTextToken;
             $user->update(['fcm_token' => $request->fcm_token]);
-            return $this->successResponse('Login Success', $token);
+            $data['token']=$token;
+            $data['name']=$user->name;
+            $data['mobile_phone']=$user->mobile_phone;
+            $data['specialization_id']=$user->code->specialization_id;
+            return $this->successResponse('Login Success', $data);
         } else {
             return $this->errorResponse('Invalid Information', 401);
         }
@@ -53,7 +58,6 @@ class AuthController extends Controller
 
     public function logout(){
         auth()->user()->currentAccessToken()->delete();
-        auth()->user()->update(['fcm_token' => null]);
         return $this->successResponse('user logged out');
     }
 }

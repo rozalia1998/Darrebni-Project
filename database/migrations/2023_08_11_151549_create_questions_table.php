@@ -19,7 +19,8 @@ return new class extends Migration
             $table->text('question_content');
             $table->string('reference');
             $table->foreignId('subject_id')->constrained('subjects')->cascadeOnDelete();
-            $table->foreignId('term_id')->constrained('terms')->cascadeOnDelete()->nullable();
+            $table->foreignId('term_id')->nullable()->constrained('terms')->cascadeOnDelete();
+            $table->foreignId('specialization_id')->constrained('specializations')->cascadeOnDelete();
             $table->timestamps();
         });
     }

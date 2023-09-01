@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Collage;
 use App\Http\Resources\CollageResource;
+use App\Http\Traits\JsonResponse;
 
 class CollageController extends Controller
 {

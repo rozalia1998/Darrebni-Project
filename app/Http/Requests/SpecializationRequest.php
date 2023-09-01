@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Traits\JsonResponseTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SpecializationRequest extends FormRequest
@@ -27,7 +28,8 @@ class SpecializationRequest extends FormRequest
         return [
             'specialization_name'=>'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'collage_id'=>'required|exists:collages,id'
+            'collage_id'=>'required|exists:collages,id',
+            'has_levels'=>'boolean'
         ];
     }
 }

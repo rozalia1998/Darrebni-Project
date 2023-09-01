@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Requests;
+namespace App\Http\Traits;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -11,6 +11,6 @@ trait JsonResponseTrait
              'code' => 422,
              'status' => false,
              'errors' => $validator->errors(),
-             ], 400));
+             ], 422));
     }
 }

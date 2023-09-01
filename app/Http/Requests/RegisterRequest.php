@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Traits\JsonResponseTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest

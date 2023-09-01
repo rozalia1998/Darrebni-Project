@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use Kutia\Larafirebase\Facades\Larafirebase;
+use Exception;
+use App\Http\Traits\JsonResponse;
 
 class NotificationController extends Controller
 {
@@ -16,7 +18,7 @@ class NotificationController extends Controller
 {
     $request->validate([
         'title' => 'required',
-        'message' => 'required'
+        'body' => 'required'
     ]);
 
     try {
@@ -24,13 +26,13 @@ class NotificationController extends Controller
 
         // Send the push notification
         Larafirebase::withTitle($request->title)
-            ->withBody($request->message)
+            ->withBody($request->body)
             ->sendMessage($fcmTokens);
 
         // Save the title and message to the database
         Notification::create([
             'title' => $request->title,
-            'message' => $request->message
+            'body' => $request->body
         ]);
 
         return $this->successResponse('Notification Sent Successfully!');
@@ -41,18 +43,11 @@ class NotificationController extends Controller
 }
 
     public function updateToken(Request $request){
-
-         
         try{
             $request->user()->update(['fcm_token'=>$request->token]);
-            return response()->json([
-                'success'=>true
-            ]);
+            return $this->successResponse('Token updated successfully');
         }catch(\Exception $e){
-            report($e);
-            return response()->json([
-                'success'=>false
-            ],500);
+            return $this->errorResponse('An error occured'. $e->getMessage());
         }
     }
 }

@@ -15,7 +15,7 @@ use Exception;
 
 class ImportanceController extends Controller
 {
-    use JsonResponseTrait;
+    use JsonResponse;
 
     public function addImportance($qid){
         try{

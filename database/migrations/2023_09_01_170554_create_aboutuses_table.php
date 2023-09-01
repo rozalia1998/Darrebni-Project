@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('imporataces', function (Blueprint $table) {
+        Schema::create('aboutuses', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
+            $table->string('image');
+            $table->string('about');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('imporataces');
+        Schema::dropIfExists('aboutuses');
     }
 };

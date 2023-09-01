@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('term_name');
-            $table->foreignId('subject_id')->constrained('subjects')->cascadeOnDelete();
+            $table->foreignId('specialization_id')->constrained('specializations')->cascadeOnDelete()->nullable();
             $table->timestamps();
         });
     }

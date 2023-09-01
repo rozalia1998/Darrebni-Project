@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Trait\GeneratesUuid;
-
+use App\Http\Traits\GeneratesUuid;
 
 class Importance extends Model
 {

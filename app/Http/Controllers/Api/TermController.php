@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TermRequest;
 use App\Models\Term;
+use App\Models\Subject;
+use App\Models\Specialization;
+use App\Http\Traits\JsonResponse;
+use App\Http\Resources\TermResource;
 use Exception;
 
 class TermController extends Controller
@@ -22,7 +26,7 @@ class TermController extends Controller
         try {
             $term=Term::create([
                 'term_name'=>$request->term_name,
-                'subject_id'=>$request->subject_id,
+                'specialization_id'=>$request->specialization_id
             ]);
             return $this->successResponse('Term Added Successfully');
 
@@ -45,14 +49,14 @@ class TermController extends Controller
             $term = Term::findOrFail($id);
 
             $term->term_name =  $request->term_name;
-            $term->subject_id =  $request->subject_id;
+            $term->specialization_id =  $request->specialization_id;
             $term->save();
 
             return $this->successResponse('Updated Term Successfully');
-        } catch (\Exception $exception) {
-            return $this->handleException($exception);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             return $this->notFoundResponse();
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
         }
     }
 
@@ -75,4 +79,20 @@ class TermController extends Controller
             return $this->handleException($exception);
         }
     }
+
+
+    public function getTerm($specialization){
+        try{
+            // $subject=Specialization::findOrFail($specialization);
+            $specialization=Specialization::where('uuid',$specialization)->first();
+            $terms=$specialization->terms()->get();
+            return $this->successResponse('All Terms Available For this Subject',TermResource::collection($terms));
+        }catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return $this->notFoundResponse();
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
+        }
+    }
+
+
 }

@@ -15,6 +15,8 @@ class CollageResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id'=>$this->$id,
+            'uuid'=>$this->uuid,
             'collage_name'=>$this->collage_name
         ];
     }

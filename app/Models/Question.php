@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\Trait\GeneratesUuid;
+use App\Http\Traits\GeneratesUuid;
 
 class Question extends Model
 {
     use HasFactory,GeneratesUuid;
 
-    protected $fillable=['uuid','question_content','reference','subject_id','term_id'];
+    protected $fillable=['uuid','question_content','reference','subject_id','term_id','specialization_id'];
 
     public function subject(): BelongsTo{
 
@@ -27,6 +27,13 @@ class Question extends Model
 
     }
 
+
+    public function specialization(): BelongsTo{
+
+        return $this->BelongsTo(Specialization::class);
+
+    }
+
     public function answers(): HasMany{
 
         return $this->hasMany(Answer::class);
@@ -35,7 +42,7 @@ class Question extends Model
 
     public function users():BelongsToMany{
 
-        return $this->belongsToMany(User::class, 'imporataces')
+        return $this->belongsToMany(User::class, 'importances')
             ->withTimestamps();
 
     }

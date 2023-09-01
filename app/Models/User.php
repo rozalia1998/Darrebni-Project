@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\Trait\GeneratesUuid;
+use App\Http\Traits\GeneratesUuid;
 
 class User extends Authenticatable
 {
@@ -36,7 +36,7 @@ class User extends Authenticatable
 
     public function questions()
     {
-        return $this->belongsToMany(Question::class, 'imporataces')
+        return $this->belongsToMany(Question::class, 'importances')
             ->withTimestamps();
     }
 

@@ -5,11 +5,49 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubjectRequest;
 use App\Models\Subject;
+use App\Models\Specialization;
+use App\Http\Traits\JsonResponse;
+use App\Http\Resources\SubjectResource;
 use Exception;
 
 class SubjectController extends Controller
 {
     use JsonResponse;
+
+    public function showMasterOrGraduationSubjects($type)
+    {
+        // Retrieve all master or graduation subjects related to the specialization with the given ID
+        $user = auth()->user();
+        $specialization = $user->code->specialization;
+
+        if ($specialization) {
+            $subjects = $specialization->subjects();
+
+            if ($type == 'master') {
+                $subjects = $subjects->where('has_master', true);
+                $message = 'Filter Master Subjects';
+            } else {
+                $subjects = $subjects->where('has_graduation', true);
+                $message = 'Filter Graduation Subjects';
+            }
+
+            $res = $subjects->get();
+            return $this->successResponse($message, SubjectResource::collection($res));
+        }
+
+        // Handle the case when the specialization is not found
+        return $this->errorResponse('Specialization not found');
+    }
+
+    public function showSubjects($uuid){
+        // Retrieve the specialization with the given ID
+        $specialization = Specialization::where('uuid',$uuid)->first();
+        // $specialization = Specialization::FindOrFail($id);
+        $subjects = $specialization->subjects()->get();
+
+        return $this->successResponse('All Subjects For Specialization',SubjectResource::collection($subjects));
+
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -23,6 +61,8 @@ class SubjectController extends Controller
             Subject::create([
                 'name' => $request->name,
                 'Specialization_id' => $request->Specialization_id,
+                'has_master'=>$request->has_master,
+                'has_graduation'=>$request->has_graduation
             ]);
 
             return $this->successResponse('Created Subject Successfully');
@@ -44,14 +84,16 @@ class SubjectController extends Controller
             $subject = Subject::findOrFail($id);
             $res = $subject->update([
                 'name'=>$request->name ?? $subject->name,
-                'Specialization_id'=>$request->Specialization_id ?? $subject->Specialization_id
+                'Specialization_id'=>$request->Specialization_id ?? $subject->Specialization_id,
+                'has_master'=>$request->has_master ?? $subject->has_master,
+                'has_graduation'=>$request->has_graduation ?? $subject->has_graduation
             ]);
 
             return $this->successResponse('Updated Subject Successfully');
-        } catch (\Exception $exception) {
-            return $this->handleException($exception);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             return $this->notFoundResponse();
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
         }
     }
 

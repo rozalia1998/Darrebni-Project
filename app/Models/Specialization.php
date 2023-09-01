@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Trait\GeneratesUuid;
+use App\Http\Traits\GeneratesUuid;
 
 class Specialization extends Model
 {
     use HasFactory,GeneratesUuid;
 
-    protected $fillable=['uuid','specialization_name','image','collage_id'];
+    protected $fillable=['uuid','specialization_name','image','collage_id','has_levels'];
 
     public function codes(): HasMany{
 
@@ -26,10 +26,19 @@ class Specialization extends Model
 
     }
 
-    public function subjects(): HasMany{
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
 
-        return $this->HasMany(Subject::class);
+    public function questions(){
 
+        return $this->hasMany(Question::class);
+    }
+
+    public function terms(){
+
+        return $this->hasMany(Term::class);
     }
 
 }

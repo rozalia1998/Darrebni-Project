@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use App\Http\Traits\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerRequest;
 use App\Models\Answer;
@@ -28,7 +28,7 @@ class AnswerController extends Controller
             $answer=Answer::create([
                 'answer_content'=>$request->answer_content,
                 'question_id'=>$request->question_id,
-                'is_correct'=>$request->is_correct,
+                'is_correct'=>$request->is_correct
             ]);
             return $this->successResponse('Answer added Successfully');
         } catch (Exception $e) {
@@ -61,10 +61,10 @@ class AnswerController extends Controller
             $answer->save();
 
             return $this->successResponse('Updated answer Successfully');
-        } catch (\Exception $exception) {
-            return $this->handleException($exception);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             return $this->notFoundResponse();
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
         }
 
     }

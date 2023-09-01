@@ -18,6 +18,8 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('name');
             $table->foreignId('Specialization_id')->constrained('specializations')->cascadeOnDelete();
+            $table->boolean('has_master')->default(false);
+            $table->boolean('has_graduation')->default(false);
             $table->timestamps();
         });
     }

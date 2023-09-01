@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Traits\JsonResponseTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SubjectRequest extends FormRequest
@@ -26,7 +27,9 @@ class SubjectRequest extends FormRequest
     {
         return [
             'name'=>'required|string',
-            'Specialization_id'=>'required|integer|exists:specializations,id'
+            'Specialization_id'=>'required|integer|exists:specializations,id',
+            'has_master'=>'boolean',
+            'has_graduation'=>'boolean'
         ];
     }
 }

@@ -1,92 +1,38 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Http\Controllers\Controller;
 
-use App\Models\AboutUs;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Traits\JsonResponse;
+use App\Http\Traits\ImageUploadTrait;
+use App\Http\Requests\AboutusRequest;
+use App\Http\Resources\AboutusResource;
+use App\Models\Aboutus;
+use Exception;
 
 class AboutUsController extends Controller
 {
-
     use JsonResponse;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $aboutus=AboutUs::all();
+    use ImageUploadTrait;
 
-        return $this->successResponse('success',$aboutus);
+    public function getAboutus(){
+        $aboutus=Aboutus::all();
+
+        return $this->successResponse('About us', AboutusResource::collection($aboutus));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    public function store(AboutusRequest $request){
+        try{
+            $image = $this->uploadImage($request, "image", "Aboutus/");
+            $aboutus=Aboutus::create([
+                'image'=>$image,
+                'about'=>$request->about
+            ]);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\AboutUs  $aboutUs
-     * @return \Illuminate\Http\Response
-     */
-    public function show(AboutUs $aboutUs)
-    {
-        
-
-
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\AboutUs  $aboutUs
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(AboutUs $aboutUs)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\AboutUs  $aboutUs
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, AboutUs $aboutUs)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\AboutUs  $aboutUs
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(AboutUs $aboutUs)
-    {
-        //
+            return $this->successResponse('Added about us');
+        }  catch (Exception $e) {
+            return $this->handleException($e);
+        }
     }
 }

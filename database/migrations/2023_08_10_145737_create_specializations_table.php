@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('specialization_name');
             $table->string('image')->nullable();
             $table->foreignId('collage_id')->constrained('collages')->cascadeOnDelete();
+            $table->boolean('has_levels')->default(false);
             $table->timestamps();
         });
     }

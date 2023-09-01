@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Traits\JsonResponseTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
-class TermRequest extends FormRequest
+class AboutusRequest extends FormRequest
 {
-    use JsonResponseTrait;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -26,9 +24,8 @@ class TermRequest extends FormRequest
     public function rules()
     {
         return [
-            'term_name'=>'required|string',
-            // 'subject_id'=>'nullable|integer|exists:subjects,id',
-           'specialization_id'=>'nullable|integer|exists:specializations,id',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'about'=>'required|string'
         ];
     }
 }

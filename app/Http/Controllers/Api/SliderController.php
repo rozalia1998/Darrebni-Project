@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\SliderRequest;
 use App\Models\Slider;
+use App\Http\Resources\SliderResource;
+use App\Http\Traits\JsonResponse;
+use Exception;
 
 class SliderController extends Controller
 {
@@ -13,7 +16,7 @@ class SliderController extends Controller
 
     public function index(){
         $sliders=Slider::all();
-        return $this->successResponse('All Sliders',$sliders);
+        return $this->successResponse('All Sliders',SliderResource::collection($sliders));
     }
 
     public function store(SliderRequest $request){
@@ -23,8 +26,8 @@ class SliderController extends Controller
                 'link'=>$request->link
             ]);
             return $this->successResponse('Slider added Successfully');
-        } catch (Exception $e) {
-            return $this->handleException($e);
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
         }
     }
 

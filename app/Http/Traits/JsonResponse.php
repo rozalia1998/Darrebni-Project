@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Traits;
 // use Illuminate\Http\JsonResponse as HttpJsonResponse;
 use Illuminate\Support\Facades\Validator;
 Trait JsonResponse{

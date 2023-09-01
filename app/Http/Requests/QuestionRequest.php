@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Traits\JsonResponseTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class QuestionRequest extends FormRequest
@@ -28,7 +29,8 @@ class QuestionRequest extends FormRequest
             'question_content'=>'required|string',
             'reference'=>'required|string',
             'subject_id'=>'required|integer|exists:subjects,id',
-            'term_id'=>'nullable|integer|exists:terms,id'
+            'term_id'=>'nullable|integer|exists:terms,id',
+            'specialization_id'=>'required|integer|exists:specializations,id'
         ];
     }
 }

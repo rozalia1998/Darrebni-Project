@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TermResource extends JsonResource
+class FeedbackResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,8 @@ class TermResource extends JsonResource
         return [
             'id'=>$this->id,
             'uuid'=>$this->uuid,
-            'term_name'=>$this->term_name,
-            'specialization_id'=>$this->specialization_id
+            'username'=>$this->user->name,
+            'feedback_content'=>$this->feedback_content
         ];
     }
 }
