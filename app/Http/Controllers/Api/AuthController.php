@@ -11,27 +11,25 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Code;
 use App\Http\Traits\JsonResponse;
+use App\Services\UserService;
 use Exception;
 
 class AuthController extends Controller
 {
     use JsonResponse;
 
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function register(RegisterRequest $request){
         try{
-            $user=User::create([
-                'name'=>$request->name,
-                'mobile_phone'=>$request->mobile_phone,
-            ]);
-            if($user){
-                $code=Code::create([
-                    'user_id'=>$user->id,
-                    'login_code'=>  Str::random(6, '1234567890'),
-                    'specialization_id'=>$request->specialization_id
-                ]);
-                $token=$user->createToken('ApiToken')->plainTextToken;
-                return $this->successResponse('User Registered Successfully', $token);
-            }
+            $user=$this->userService->newRegister($request->all());
+            $token=$user->createToken('ApiToken')->plainTextToken;
+            return $this->successResponse('User Registered Successfully', $token);
         } catch (Exception $e) {
             return $this->handleException($e);
         }
@@ -46,10 +44,12 @@ class AuthController extends Controller
         if ($user && $user->code && $user->code->login_code === $credentials['login_code']) {
             $token = $user->createToken('ApiToken')->plainTextToken;
             $user->update(['fcm_token' => $request->fcm_token]);
-            $data['token']=$token;
-            $data['name']=$user->name;
-            $data['mobile_phone']=$user->mobile_phone;
-            $data['specialization_id']=$user->code->specialization_id;
+            $data = [
+                'token'=>$token,
+                'name' => $user->name,
+                'mobile_phone' => $user->mobile_phone,
+                'specialization_id' => $user->code->specialization->id,
+            ];
             return $this->successResponse('Login Success', $data);
         } else {
             return $this->errorResponse('Invalid Information', 401);

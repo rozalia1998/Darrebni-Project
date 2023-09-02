@@ -80,14 +80,13 @@ class TermController extends Controller
         }
     }
 
-
-    public function getTerm($specialization){
-        try{
-            // $subject=Specialization::findOrFail($specialization);
-            $specialization=Specialization::where('uuid',$specialization)->first();
-            $terms=$specialization->terms()->get();
-            return $this->successResponse('All Terms Available For this Subject',TermResource::collection($terms));
-        }catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+    public function getTerm(string $specializationUuid)
+    {
+        try {
+            $specialization = Specialization::where('uuid', $specializationUuid)->with('terms')->firstOrFail();
+            $terms = $specialization->terms;
+            return $this->successResponse('All Terms Available For this Subject', TermResource::collection($terms));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             return $this->notFoundResponse();
         } catch (\Exception $exception) {
             return $this->handleException($exception);

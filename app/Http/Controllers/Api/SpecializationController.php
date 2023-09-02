@@ -51,8 +51,9 @@ class SpecializationController extends Controller
 
     public function store(SpecializationRequest $request)
     {
+        // $imageName = $this->uploadImage($request,'specialization');
 
-        $image = $this->uploadImage($request, "image", "specializations/");
+         $image = $this->uploadImage($request, "image", "specializations/");
 
         $specialization = Specialization::create([
             'specialization_name' => $request->specialization_name,
@@ -86,7 +87,7 @@ class SpecializationController extends Controller
 
     public function destroy($id){
         try {
-            $specialization = Specialization::findOrFail($sid);
+            $specialization = Specialization::findOrFail($id);
             $specialization->delete();
             $this->deleteImage($specialization->image);
 

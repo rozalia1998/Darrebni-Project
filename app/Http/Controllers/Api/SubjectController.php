@@ -39,15 +39,18 @@ class SubjectController extends Controller
         return $this->errorResponse('Specialization not found');
     }
 
-    public function showSubjects($uuid){
-        // Retrieve the specialization with the given ID
-        $specialization = Specialization::where('uuid',$uuid)->first();
-        // $specialization = Specialization::FindOrFail($id);
-        $subjects = $specialization->subjects()->get();
+    public function showSubjects(string $specializationUuid)
+    {
+        try {
+            $specialization = Specialization::where('uuid', $specializationUuid)->firstOrFail();
+            $subjects = $specialization->subjects()->get();
 
-        return $this->successResponse('All Subjects For Specialization',SubjectResource::collection($subjects));
-
+            return $this->successResponse('All Subjects For Specialization', SubjectResource::collection($subjects));
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Specialization not found', 404);
+        }
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -116,4 +119,5 @@ class SubjectController extends Controller
             return $this->handleException($exception);
         }
     }
+
 }

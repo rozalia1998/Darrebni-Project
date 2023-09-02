@@ -10,7 +10,7 @@ use App\Models\Answer;
 use App\Models\Specialization;
 use App\Models\Subject;
 use App\Http\Traits\JsonResponse;
-use App\Http\Resources\QuestionAnswerTermResource;
+use App\Http\Resources\QuestionResource;
 use Exception;
 
 class QuestionController extends Controller
@@ -18,8 +18,7 @@ class QuestionController extends Controller
     use JsonResponse;
 
     public function store(QuestionRequest $request){
-        // try {
-
+        try {
             $question=Question::create([
                 'question_content'=>$request->question_content,
                 'reference'=>$request->reference,
@@ -28,9 +27,9 @@ class QuestionController extends Controller
                 'specialization_id'=>$request->specialization_id
             ]);
             return $this->successResponse('Question added Successfully');
-        // } catch (Exception $e) {
-        //     return $this->handleException($e);
-        // }
+        } catch (Exception $e) {
+            return $this->handleException($e);
+        }
     }
 
     public function update(QuestionRequest $request,$id){
@@ -68,43 +67,61 @@ class QuestionController extends Controller
 
 
     public function BankQuestions($specialization_id){
-        $specialization = Specialization::where('uuid', $specialization_id)->first();
-        $res=Specialization::findOrFail($specialization->id);
-        $questions = $res->questions()
-        ->whereNull('term_id')
-        ->inRandomOrder()
-        ->limit(50)
-        ->with('answers')
-        ->get();
+        try {
+            $specialization = Specialization::where('uuid', $specialization_id)->firstOrFail();
 
-        return $this->successResponse('Random Bank Questions Depends On Specialization', $questions);
+            $questions = $specialization->questions()
+                ->whereNull('term_id')
+                ->inRandomOrder()
+                ->limit(50)
+                ->with('answers')
+                ->get();
+
+            return $this->successResponse('Random Bank Questions Depends On Specialization', QuestionResource::collection($questions));
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
+        }
+
     }
 
     public function QuestionTermForSpecialization($termid){
-        $term=Term::where('uuid',$termid)->first();
-        $res=Term::findOrFail($term->id);
-        $questions=$res->questions()->inRandomOrder()
-             ->limit(50)->with('answers')->get();
+        try {
+            $term = Term::where('uuid', $termid)->with('questions.answers')->firstOrFail();
 
-        return $this->successResponse('Random Question Terms',$questions);
+            $questions = $term->questions()->inRandomOrder()->paginate(50);
+
+            return $this->successResponse('Random Question Terms',QuestionResource::collection($questions));
+        }  catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return $this->notFoundResponse('Term Not Found');
+        }
     }
 
-    public function getQuestionsBySubject($termId,$subid){
-        $term=Term::where('uuid',$termId)->first();
-        $sub=Subject::where('uuid',$subid)->first();
-        $subres=Subject::findOrFail($sub->id);
+    public function getQuestionsBySubject($termUuid,$subjectUuid){
+        try {
+            $term = Term::where('uuid', $termUuid)->firstOrFail();
+            $subject = Subject::where('uuid', $subjectUuid)->firstOrFail();
 
-        $questions=$subres->questions()->where('term_id',$term->id)->with('answers')->get();
+            $questions = $subject->questions()
+                ->where('term_id', $term->id)
+                ->with('answers', 'term', 'subject')
+                ->get();
 
-        return $this->successResponse('Questions For Subject',$questions);
+            return $this->successResponse('Questions For Subject', QuestionResource::collection($questions));
+        } catch (\Exception $e) {
+            return $this->errorResponse('Error retrieving questions');
+        }
+
     }
 
     public function BookQuestion($subid){
-        $subject=Subject::where('uuid',$subid)->first();
-        $subjectres=Subject::findOrFail($subject->id);
-        $questions=$subjectres->questions()->with('answers')->whereNull('term_id')->get();
+        try {
+            $subject = Subject::where('uuid', $subid)->firstOrFail();
+            $questions = $subject->questions()->with('answers')->whereNull('term_id')->get();
 
-        return $this->successResponse('Book Questions For Subject',$questions);
+            return $this->successResponse('Book Questions For Subject', QuestionResource::collection($questions));
+        } catch (\Exception $e) {
+            return $this->errorResponse('Failed to retrieve book questions for subject.', 500);
+        }
     }
 
 
