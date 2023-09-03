@@ -97,6 +97,7 @@ Route::prefix('/Darrebni')->group(function (){
             Route::delete('/Answer/delete/{id}', [AnswerController::class, 'destroy']);
 
             Route::post('/AboutUs/create', [AboutUsController::class, 'store']);
+            Route::delete('/AboutUs/delete/{id}', [AboutUsController::class, 'delete']);
 
         });
 

@@ -21,20 +21,41 @@ class SpecializationController extends Controller
         return $this->successResponse('All Specializations',SpecializationResource::collection($specializations));
     }
 
-    public function getByCollage($uuid){
-        $collage=Collage::where('uuid',$uuid)->first();
-        // $collage=Collage::findOrfail($id);
-        $object=$collage->specializations()->get();
-        return $this->successResponse('Get Specializations By Collage',SpecializationResource::collection($object));
+    public function getByCollage($uuid)
+    {
+        try {
+            $college = Collage::where('uuid', $uuid)->firstOrFail();
+            $specializationIds = $college->specializations()->pluck('id');
+            $specializations = Specialization::whereIn('id', $specializationIds)->get();
 
+            return $this->successResponse('Get Specializations By College', SpecializationResource::collection($specializations));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $this->notFoundResponse('College not found');
+        } catch (\Exception $exception) {
+            return $this->handleException($exception);
+        }
     }
 
-    public function searchBySpecialization(Request $request){
-        $specialization=Specialization::where('specialization_name','like','%'.$request->specialization_name.'%')->get();
-        if(!$specialization->isEmpty()){
-            return $this->successResponse('Search By Specialization',SpecializationResource::collection($specialization));
+    public function searchBySpecialization(Request $request)
+    {
+        $specializationName = $request->input('specialization_name');
+
+        if (empty($specializationName)) {
+            return $this->errorResponse('Specialization name is required');
         }
-        return $this->notFoundResponse('Specialization Not Found');
+
+        try {
+            $specializations = Specialization::where('specialization_name', 'like', '%' . $specializationName . '%')
+                ->paginate(10);
+
+            if ($specializations->isEmpty()) {
+                return $this->notFoundResponse('Specialization Not Found');
+            }
+
+            return $this->successResponse('Search By Specialization', SpecializationResource::collection($specializations));
+        } catch (\Exception $e) {
+            return $this->errorResponse('An error occurred', 500);
+        }
     }
 
 
@@ -51,10 +72,10 @@ class SpecializationController extends Controller
 
     public function store(SpecializationRequest $request)
     {
-        // $imageName = $this->uploadImage($request,'specialization');
-
-         $image = $this->uploadImage($request, "image", "specializations/");
-
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $image = $this->uploadImage($file, "specializations/");
+        }
         $specialization = Specialization::create([
             'specialization_name' => $request->specialization_name,
             'image' => $image,
@@ -75,9 +96,9 @@ class SpecializationController extends Controller
                 'collage_id' => $request->collage_id ?? $specialization->collage_id
             ]);
 
-        return $this->successResponse('Updated Specialization successfully');
+            return $this->successResponse('Updated Specialization successfully');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return $this->notFoundResponse();
+            return $this->notFoundResponse('Specialization Not Found');
         } catch (\Exception $exception) {
             return $this->handleException($exception);
         }

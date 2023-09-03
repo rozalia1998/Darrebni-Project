@@ -40,12 +40,17 @@ class ImportanceController extends Controller
         return $this->successResponse('All Importance Questions',$importances);
     }
 
-    public function removeImportance($qid){
-        try{
-            $user=Auth::user();
-            $question=Question::FindOrFail($qid);
+    public function removeImportance($questionId)
+    {
+        try {
+            $user = Auth::user();
+            $question = Question::findOrFail($questionId);
+
             $user->questions()->detach($question->id);
-            return $this->successResponse('Remove From Impotance Successfully');
+
+            return $this->successResponse('Question removed from importance successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return $this->notFoundResponse();
         } catch (Exception $exception) {
             return $this->handleException($exception);
         }

@@ -48,7 +48,7 @@ class AuthController extends Controller
                 'token'=>$token,
                 'name' => $user->name,
                 'mobile_phone' => $user->mobile_phone,
-                'specialization_id' => $user->code->specialization->id,
+                'specialization_id' => $user->code->specialization_id,
             ];
             return $this->successResponse('Login Success', $data);
         } else {

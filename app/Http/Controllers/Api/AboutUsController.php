@@ -24,7 +24,10 @@ class AboutUsController extends Controller
 
     public function store(AboutusRequest $request){
         try{
-            $image = $this->uploadImage($request, "image", "Aboutus/");
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $image = $this->uploadImage($file, "Aboutus/");
+            }
             $aboutus=Aboutus::create([
                 'image'=>$image,
                 'about'=>$request->about
@@ -33,6 +36,18 @@ class AboutUsController extends Controller
             return $this->successResponse('Added about us');
         }  catch (Exception $e) {
             return $this->handleException($e);
+        }
+    }
+
+    public function destroy($id){
+        try {
+            $aboutus = Aboutus::findOrFail($id);
+            $aboutus->delete();
+            $this->deleteImage($aboutus->image);
+
+            return $this->successResponse('Deleted aboutus Successfully');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
+            return $this->notFoundResponse();
         }
     }
 }
